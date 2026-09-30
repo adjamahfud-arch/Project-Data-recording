@@ -1,0 +1,47 @@
+[
+    {
+        "nama": "mahfud",
+        "alamat": "bancak",
+        "gula": 0,
+        "beras": 99,
+        "uang": 9000,
+        "dll": "sukun",
+        "status": true
+    },
+    {
+        "nama": "l",
+        "alamat": "tokyo",
+        "gula": 0,
+        "beras": 0,
+        "uang": 0,
+        "dll": "Rokok",
+        "status": true
+    },
+    {
+        "nama": "devita",
+        "alamat": "ngetok",
+        "gula": 0,
+        "beras": 0,
+        "uang": 900,
+        "dll": "data kosong",
+        "status": true
+    },
+    {
+        "nama": "Dante",
+        "alamat": "Jepara",
+        "gula": 0,
+        "beras": "90",
+        "uang": 1000,
+        "dll": "Pedang",
+        "status": false
+    },
+    {
+        "nama": "Vergil",
+        "alamat": "Demon",
+        "gula": 90,
+        "beras": 90,
+        "uang": 0,
+        "dll": "data kosong",
+        "status": false
+    }
+]
