@@ -1,6 +1,8 @@
 import input
 import json
 from datetime import datetime
+from difflib import SequenceMatcher
+
 
 class Users:
    def __init__(self,nama,alamat,gula,beras,uang,dll):
@@ -35,7 +37,56 @@ class Simpan:
        self.data_base =self.load_file()
    def tambah(self,data):
        self.data_base.append(data)
+   def skors(self,user,dta):
+       return SequenceMatcher(
+          None,
+          user,
+          dta
+          
+      ).ratio()
+         
+       
      
+   def simple_serch(self,nama,trestold=0.5):
+       data_hasil =[]
+       for item in self.data_base:
+           skor =self.skors(nama,item.nama)
+
+           if item.status and skor >=trestold:
+              data_hasil.append((item,skor))
+       data_hasil.sort(key=lambda p:p[1], reverse=True)
+       return data_hasil
+     
+   def tampilkan_search(self,usernama):
+       hasil =self.simple_serch(usernama)
+       if not hasil:
+          print(f"tidak ada data yang cocok dengan {usernama}")
+       else:
+         for hsl in hasil:
+             nama =hsl[0]
+             print(f"{nama.nama:<10} | {nama.alamat:<10} | {nama.gula} | {nama.beras} | {nama.uang:<10} | {nama.dll}")
+           
+           
+           
+       
+
+          
+         
+           
+
+       
+       
+         
+          
+     
+             
+                 
+                
+          
+       
+          
+               
+              
    def hapus(self,data_hapus):
        for L in self.data_base:
            if L.nama ==data_hapus:
@@ -110,6 +161,9 @@ def kolom():
     print("2.tampilkan data")
     print("3.keluar")
     print("4.update data")
+    print("5.hapus data")
+    print("6.cari data")
+  
   
 def pilihan():
     print("1.gula")
@@ -129,46 +183,53 @@ def dict_n():
     }
 
 sb =Simpan("data_base.json")
-while True:
-   kolom()
-   pilih_ =input.pilih()
-   if pilih_ ==1:
-      nama_ =input.pertanyaan_1()
-      alamat_ =input.pertanyaan_2()
-      gula_ =input.pertanyaan_3()
-      beras_ =input.pertanyaan_4()
-      uang_ =input.pertanyaan_5()
-      dll_ =input.pertanyaan_6()
-      simpan =Users(nama_,alamat_,gula_,beras_,uang_,dll_)
-      sb.tambah(simpan)
-      sb.simpan_data()
-      print("data berhasil di simpan")
+if __name__=="__main__":
+   while True:
+      kolom()
+      pilih_ =input.pilih()
+      if pilih_ ==1:
+         nama_ =input.pertanyaan_1()
+         alamat_ =input.pertanyaan_2()
+         gula_ =input.pertanyaan_3()
+         beras_ =input.pertanyaan_4()
+         uang_ =input.pertanyaan_5()
+         dll_ =input.pertanyaan_6()
+         simpan =Users(nama_,alamat_,gula_,beras_,uang_,dll_)
+         sb.tambah(simpan)
+         sb.simpan_data()
+         print("data berhasil di simpan")
      
-   elif pilih_ ==2:
-        sb.tampilkan()
+      elif pilih_ ==2:
+          sb.tampilkan()
      
-   elif pilih_ ==3:
-        print("keluar dari program")
-        break
-   elif pilih_ ==4:
-        name_ =input.pertanyaan_1()
-        if not sb.veref_(name_):
-           continue
-        else:
-           pilihan()
-           condisi =input.pilih_2()
-           dict_ =dict_n()
-           if condisi in dict_:
-              isi_attr =dict_[condisi]
-              nilai_new =input.pertanyaan_7()
-              sb.update(name_,isi_attr,nilai_new)
-              sb.simpan_data()
+      elif pilih_ ==3:
+           print("keluar dari program")
+           break
+      elif pilih_ ==4:
+           name_ =input.pertanyaan_1()
+           if not sb.veref_(name_):
+              continue
            else:
-              print(f"{condisi} tidak ada terdafdar dalam data")
-   elif pilih_ ==5:
-        delete_ =input.pertanyaan_8()
-        sb.hapus(delete_)
-        sb.simpan_data()
+              pilihan()
+              condisi =input.pilih_2()
+              dict_ =dict_n()
+              if condisi in dict_:
+                 isi_attr =dict_[condisi]
+                 nilai_new =input.pertanyaan_7()
+                 sb.update(name_,isi_attr,nilai_new)
+                 sb.simpan_data()
+              else:
+                 print(f"{condisi} tidak ada terdafdar dalam data")
+      elif pilih_ ==5:
+               delete_ =input.pertanyaan_8()
+               sb.hapus(delete_)
+               sb.simpan_data()
+      elif pilih_ ==6:
+           user_name =input.pertanyaan_1()
+           sb.tampilkan_search(user_name)
+           
+        
+     
    
         
       
