@@ -1,42 +1,29 @@
 import input
 import json
+import sqlite3
+import sys
 from datetime import datetime
+from pathlib import Path
+from rapidfuzz.distance import Levenshtein
 from difflib import SequenceMatcher
 
+file_dir =Path(
+    "/storage/emulated/0/proyek data kajatan/Service"
+)
 
-class Users:
-   def __init__(self,nama,alamat,gula,beras,uang,dll):
-       self.nama =nama
-       self.alamat =alamat
-       self.gula =gula
-       self.beras =beras
-       self.uang =uang
-       self.dll =dll
-       self.status =True
-     
-   @classmethod
-   def from_dict(cls,data):
-       data_ =cls(data["nama"],data["alamat"],data["gula"],data["beras"],data["uang"],data["dll"])
-       data_.status =data["status"]
-       return data_
-   def to_dict(self):
-       return {
-          "nama":self.nama,
-          "alamat":self.alamat,
-          "gula":self.gula,
-          "beras":self.beras,
-          "uang":self.uang,
-          "dll":self.dll,
-          "status":self.status
-       }
-  
+sys.path.insert(0, str(file_dir))
+from Service.kelas import Ini
+from Service.service import Ssimpan
+
+format_wkt ="%H-%M %d %m %Y %A"
 
 class Simpan:
-   def __init__(self,file):
-       self.file =file
-       self.data_base =self.load_file()
+   def __init__(self):
+       self.data_base =Ssimpan.load()
+     
    def tambah(self,data):
        self.data_base.append(data)
+     
    def skors(self,user,dta):
        return SequenceMatcher(
           None,
@@ -46,8 +33,8 @@ class Simpan:
       ).ratio()
          
        
-     
-   def simple_serch(self,nama,trestold=0.5):
+       
+   def simple_serch(self,nama: str,trestold=0.5) -> int:
        data_hasil =[]
        for item in self.data_base:
            skor =self.skors(nama,item.nama)
@@ -57,7 +44,7 @@ class Simpan:
        data_hasil.sort(key=lambda p:p[1], reverse=True)
        return data_hasil
      
-   def tampilkan_search(self,usernama):
+   def tampilkan_search(self,usernama: str) -> None:
        hasil =self.simple_serch(usernama)
        if not hasil:
           print(f"tidak ada data yang cocok dengan {usernama}")
@@ -87,7 +74,7 @@ class Simpan:
           
                
               
-   def hapus(self,data_hapus):
+   def hapus(self,data_hapus: str) -> None:
        for L in self.data_base:
            if L.nama ==data_hapus:
               L.status =False
@@ -95,7 +82,7 @@ class Simpan:
               return
        print(f"data {data_hapus} tidak di temukan")
        
-   def veref_(self,username):
+   def veref_(self,username: str) -> bool:
        if len(self.data_base) ==0:
           print("data masih kosong")
           return
@@ -123,9 +110,13 @@ class Simpan:
                 return
        print(f"{nama} tidak di temukan")
      
-                
-             
-       
+   def isi(self,nama: str,alamat: str,waktu: str) -> None:
+       usr =Ini(nama,alamat,waktu)
+       self.tambah(usr)
+       acept= Ssimpan.simpan_dta(self.data_base)
+       if acept:
+          print("data berhasil di simpan")
+      
        
    def tampilkan(self):
        if len(self.data_base) ==0:
@@ -134,28 +125,70 @@ class Simpan:
        for z in self.data_base:
            if z.status:
               print(f"{z.nama:<10} | {z.alamat:<10} | {z.gula} | {z.beras} | {z.uang} | {z.dll:<10}")
+   
          
-   def simpan_data(self):
-       try:
-         with open(self.file, "w", encoding="utf-8") as file:
-              simpan =[y.to_dict() for y in self.data_base]
-              json.dump(simpan,file,indent=4)
-           
-       except Exception as e:
-            print(f"error:{e}")
+   
+class Data:
+   def __init__(self,name_file: str) -> None:
+       self.con =sqlite3.connect(name_file)
+       self.config =self.creat()
+       self.con.row_factory=sqlite3.Row
+       self.con.create_function(
+            "ombo",
+            2,
+            Levenshtein.distance
+       )
       
-   def load_file(self):
-       try:
-         with open(self.file, "r", encoding="utf-8") as file:
-              data_mentah =json.load(file)
-              return [Users.from_dict(x) for x in data_mentah]
-       except FileNotFoundError:
-            return []
-       except Exception as e:
-            print(f"error:{e}")
-            
+   def creat(self):
+       self.con.execute("""
+            CREATE TABLE IF NOT EXISTS catatan (
+                id INTEGER PRIMARY KEY
+                AUTOINCREMENT,
+                nama TEXT NOT NULL,
+                alamat VARCHAR(30) NOT NULL,
+                gula REAL,
+                beras REAL,
+                uang INT,
+                dll TEXT
+            )
+             """)
+       self.con.commit()
 
-         
+   def simpan_data(self,nama: str,alamat: str,gula: int,beras: int,uang: int,dll: str):
+       self.con.execute("""
+            INSERT INTO catatan (nama,alamat,gula,beras,uang,dll) VALUES (?,?,?,?,?,?)
+            """,
+            (nama,alamat,gula,beras,uang,dll)
+       )
+       self.con.commit()  
+
+   def luru(self,nama: str):
+       cursor =self.con.cursor()
+       cursor.execute("""
+            SELECT *, ombo(nama, ?) AS skor
+            FROM catatan
+            WHERE ombo(nama, ?) <= 3
+            ORDER BY skor ASC""",
+            (nama, nama)
+       )
+       hasil =cursor.fetchall()
+       for row in hasil:
+           print(
+              row["id"],
+              row["nama"],
+              row["alamat"],
+              row["gula"],
+              row["beras"],
+              row["uang"],
+              row["dll"]
+           )
+     
+class Timi:
+   @staticmethod
+   def waktu():
+       is_time =datetime.now().strftime(format_wkt)
+       return is_time
+     
 def kolom():
     print("1.tambah user")
     print("2.tampilkan data")
@@ -182,8 +215,9 @@ def dict_n():
       "6":"nama"
     }
 
-sb =Simpan("data_base.json")
+sb =Simpan()
 if __name__=="__main__":
+   data_s =Data("data_kajatan.db")
    while True:
       kolom()
       pilih_ =input.pilih()
@@ -194,15 +228,15 @@ if __name__=="__main__":
          beras_ =input.pertanyaan_4()
          uang_ =input.pertanyaan_5()
          dll_ =input.pertanyaan_6()
-         simpan =Users(nama_,alamat_,gula_,beras_,uang_,dll_)
-         sb.tambah(simpan)
-         sb.simpan_data()
-         print("data berhasil di simpan")
+         his_time =Timi.waktu()
+         data_s.simpan_data(nama_,alamat_,gula_,beras_,uang_,dll_)
+         sb.isi(nama_,alamat_,his_time)
      
       elif pilih_ ==2:
           sb.tampilkan()
      
       elif pilih_ ==3:
+           data_s.con.close()
            print("keluar dari program")
            break
       elif pilih_ ==4:
@@ -226,8 +260,9 @@ if __name__=="__main__":
                sb.simpan_data()
       elif pilih_ ==6:
            user_name =input.pertanyaan_1()
-           sb.tampilkan_search(user_name)
+           data_s.luru(user_name)
            
+             
         
      
    
