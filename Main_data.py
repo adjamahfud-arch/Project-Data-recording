@@ -14,6 +14,7 @@ file_dir =Path(
 sys.path.insert(0, str(file_dir))
 from Service.kelas import Ini
 from Service.service import Ssimpan
+from Service.database import Data
 
 format_wkt ="%H-%M %d %m %Y %A"
 
