@@ -1,11 +1,9 @@
-import input
 import json
-import sqlite3
 import sys
 from datetime import datetime
 from pathlib import Path
-from rapidfuzz.distance import Levenshtein
 from difflib import SequenceMatcher
+import Module.input as vld
 
 file_dir =Path(
     "/storage/emulated/0/proyek data kajatan/Service"
@@ -127,62 +125,6 @@ class Simpan:
            if z.status:
               print(f"{z.nama:<10} | {z.alamat:<10} | {z.gula} | {z.beras} | {z.uang} | {z.dll:<10}")
    
-         
-   
-class Data:
-   def __init__(self,name_file: str) -> None:
-       self.con =sqlite3.connect(name_file)
-       self.config =self.creat()
-       self.con.row_factory=sqlite3.Row
-       self.con.create_function(
-            "ombo",
-            2,
-            Levenshtein.distance
-       )
-      
-   def creat(self):
-       self.con.execute("""
-            CREATE TABLE IF NOT EXISTS catatan (
-                id INTEGER PRIMARY KEY
-                AUTOINCREMENT,
-                nama TEXT NOT NULL,
-                alamat VARCHAR(30) NOT NULL,
-                gula REAL,
-                beras REAL,
-                uang INT,
-                dll TEXT
-            )
-             """)
-       self.con.commit()
-
-   def simpan_data(self,nama: str,alamat: str,gula: int,beras: int,uang: int,dll: str):
-       self.con.execute("""
-            INSERT INTO catatan (nama,alamat,gula,beras,uang,dll) VALUES (?,?,?,?,?,?)
-            """,
-            (nama,alamat,gula,beras,uang,dll)
-       )
-       self.con.commit()  
-
-   def luru(self,nama: str):
-       cursor =self.con.cursor()
-       cursor.execute("""
-            SELECT *, ombo(nama, ?) AS skor
-            FROM catatan
-            WHERE ombo(nama, ?) <= 3
-            ORDER BY skor ASC""",
-            (nama, nama)
-       )
-       hasil =cursor.fetchall()
-       for row in hasil:
-           print(
-              row["id"],
-              row["nama"],
-              row["alamat"],
-              row["gula"],
-              row["beras"],
-              row["uang"],
-              row["dll"]
-           )
      
 class Timi:
    @staticmethod
@@ -218,26 +160,26 @@ def dict_n():
 
 sb =Simpan()
 if __name__=="__main__":
-   data_s =Data("data_kajatan.db")
+   data_s =Data()
    while True:
       kolom()
-      pilih_ =input.pilih()
+      pilih_ =vld.pilih()
       if pilih_ ==1:
-         nama_ =input.pertanyaan_1()
-         alamat_ =input.pertanyaan_2()
-         gula_ =input.pertanyaan_3()
-         beras_ =input.pertanyaan_4()
-         uang_ =input.pertanyaan_5()
-         dll_ =input.pertanyaan_6()
+         nama_ =vld.pertanyaan_1()
+         alamat_ =vld.pertanyaan_2()
+         beras_ =vld.pertanyaan_4()
+         gula_ =vld.pertanyaan_3()
+         uang_ =vld.pertanyaan_5()
+         dll_ =vld.pertanyaan_6()
          his_time =Timi.waktu()
-         data_s.simpan_data(nama_,alamat_,gula_,beras_,uang_,dll_)
+         data_s.tambah(nama_,alamat_,beras_,gula_,uang_,dll_)
          sb.isi(nama_,alamat_,his_time)
      
       elif pilih_ ==2:
           sb.tampilkan()
      
       elif pilih_ ==3:
-           data_s.con.close()
+           data_s.tutup()
            print("keluar dari program")
            break
       elif pilih_ ==4:
@@ -260,7 +202,7 @@ if __name__=="__main__":
                sb.hapus(delete_)
                sb.simpan_data()
       elif pilih_ ==6:
-           user_name =input.pertanyaan_1()
+           user_name =vld.pertanyaan_1()
            data_s.luru(user_name)
            
              
