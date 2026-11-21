@@ -57,7 +57,16 @@ class Data:
          
    def tutup(self):
        self.con.close()
-     
+
+   def tampil(self):
+       cursor =self.con.cursor()
+       cursor.execute(
+          "SELECT * FROM record"
+       )
+       hsl =cursor.fetchall()
+       for row in hsl:
+           print(f"{row["nama"]:>15} | {row["alamat"]}")
+         
 if __name__=="__main__":
    gile =Data()
-   
+   gile.tampil()

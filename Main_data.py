@@ -1,9 +1,9 @@
 import json
 import sys
-from datetime import datetime
 from pathlib import Path
 from difflib import SequenceMatcher
 import Module.input as vld
+from helper.waktu import time
 
 file_dir =Path(
     "/storage/emulated/0/proyek data kajatan/Service"
@@ -126,12 +126,6 @@ class Simpan:
               print(f"{z.nama:<10} | {z.alamat:<10} | {z.gula} | {z.beras} | {z.uang} | {z.dll:<10}")
    
      
-class Timi:
-   @staticmethod
-   def waktu():
-       is_time =datetime.now().strftime(format_wkt)
-       return is_time
-     
 def kolom():
     print("1.tambah user")
     print("2.tampilkan data")
@@ -171,7 +165,7 @@ if __name__=="__main__":
          gula_ =vld.pertanyaan_3()
          uang_ =vld.pertanyaan_5()
          dll_ =vld.pertanyaan_6()
-         his_time =Timi.waktu()
+         his_time =time(format_wkt)
          data_s.tambah(nama_,alamat_,beras_,gula_,uang_,dll_)
          sb.isi(nama_,alamat_,his_time)
      
