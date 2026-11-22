@@ -4,6 +4,7 @@ from pathlib import Path
 from difflib import SequenceMatcher
 import Module.input as vld
 from helper.waktu import time
+from helper.kolom import pilih_k
 
 file_dir =Path(
     "/storage/emulated/0/proyek data kajatan/Service"
@@ -125,14 +126,6 @@ class Simpan:
            if z.status:
               print(f"{z.nama:<10} | {z.alamat:<10} | {z.gula} | {z.beras} | {z.uang} | {z.dll:<10}")
    
-     
-def kolom():
-    print("1.tambah user")
-    print("2.tampilkan data")
-    print("3.keluar")
-    print("4.update data")
-    print("5.hapus data")
-    print("6.cari data")
   
   
 def pilihan():
@@ -156,7 +149,7 @@ sb =Simpan()
 if __name__=="__main__":
    data_s =Data()
    while True:
-      kolom()
+      pilih_k()
       pilih_ =vld.pilih()
       if pilih_ ==1:
          nama_ =vld.pertanyaan_1()
@@ -170,7 +163,7 @@ if __name__=="__main__":
          sb.isi(nama_,alamat_,his_time)
      
       elif pilih_ ==2:
-          sb.tampilkan()
+          data_s.tampil()
      
       elif pilih_ ==3:
            data_s.tutup()

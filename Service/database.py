@@ -64,9 +64,9 @@ class Data:
           "SELECT * FROM record"
        )
        hsl =cursor.fetchall()
-       for row in hsl:
-           print(f"{row["nama"]:>15} | {row["alamat"]}")
-         
+       for index, row in enumerate(hsl,start=1):
+           print(f"{index}. {row["nama"]:<15} | {row["alamat"]}")
+
 if __name__=="__main__":
-   gile =Data()
-   gile.tampil()
+   db =Data()
+   db.tampil()
