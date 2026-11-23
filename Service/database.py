@@ -66,7 +66,14 @@ class Data:
        hsl =cursor.fetchall()
        for index, row in enumerate(hsl,start=1):
            print(f"{index}. {row["nama"]:<15} | {row["alamat"]}")
-
+   def update(self,id: int,kolom: str,nilai_new):
+       query =f"""
+        UPDATE record SET {kolom} = ?
+        WHERE id == ?
+        """
+       self.con.execute(query, (nilai_new, id))
+       self.con.commit()
+       
 if __name__=="__main__":
    db =Data()
-   db.tampil()
+   db.update(1,"uang",90)
