@@ -66,12 +66,16 @@ class Data:
        hsl =cursor.fetchall()
        for index, row in enumerate(hsl,start=1):
            print(f"{index}. {row["nama"]:<15} | {row["alamat"]}")
-   def update(self,id: int,kolom: str,nilai_new):
+         
+   def update(self,nama: str,kolom: str,nilai_new):
        query =f"""
         UPDATE record SET {kolom} = ?
-        WHERE id == ?
+        WHERE nama == ?
         """
-       self.con.execute(query, (nilai_new, id))
+       cursor= self.con.execute(query, (nilai_new, nama))
+       if cursor.rowcount == 0:
+          print("nama tidak di temukan")
+       print("data berhasil di ubah")
        self.con.commit()
        
 if __name__=="__main__":

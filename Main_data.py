@@ -125,8 +125,10 @@ class Simpan:
        for z in self.data_base:
            if z.status:
               print(f"{z.nama:<10} | {z.alamat:<10} | {z.gula} | {z.beras} | {z.uang} | {z.dll:<10}")
-   
-  
+
+def pesan(nilai):
+    if nilai == 0:
+       print("selamat datang di program python saya ;)")
   
 def pilihan():
     print("1.gula")
@@ -148,7 +150,9 @@ def dict_n():
 sb =Simpan()
 if __name__=="__main__":
    data_s =Data()
+   nilai_pesan = 0
    while True:
+      pesan(nilai_pesan)
       pilih_k()
       pilih_ =vld.pilih()
       if pilih_ ==1:
@@ -161,27 +165,30 @@ if __name__=="__main__":
          his_time =time(format_wkt)
          data_s.tambah(nama_,alamat_,beras_,gula_,uang_,dll_)
          sb.isi(nama_,alamat_,his_time)
-     
+         nilai_pesan += 1
+        
       elif pilih_ ==2:
           data_s.tampil()
+          nilai_pesan += 1
      
       elif pilih_ ==3:
            data_s.tutup()
            print("keluar dari program")
+           nilai_pesan += 1
            break
       elif pilih_ ==4:
-           name_ =input.pertanyaan_1()
+           name_ =vld.pertanyaan_1()
+           nilai_pesan += 1
            if not sb.veref_(name_):
               continue
            else:
               pilihan()
-              condisi =input.pilih_2()
+              condisi =vld.pilih_2()
               dict_ =dict_n()
               if condisi in dict_:
                  isi_attr =dict_[condisi]
-                 nilai_new =input.pertanyaan_7()
-                 sb.update(name_,isi_attr,nilai_new)
-                 sb.simpan_data()
+                 nilai_news =vld.pertanyaan_7()
+                 data_s.update(name_,isi_attr,nilai_news)
               else:
                  print(f"{condisi} tidak ada terdafdar dalam data")
       elif pilih_ ==5:
@@ -191,6 +198,7 @@ if __name__=="__main__":
       elif pilih_ ==6:
            user_name =vld.pertanyaan_1()
            data_s.luru(user_name)
+           nilai_pesan += 1
            
              
         
