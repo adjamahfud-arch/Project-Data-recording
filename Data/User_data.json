@@ -16,5 +16,11 @@
         "alamat": "Bancak",
         "waktu": "20-55 21 11 2026 Saturday",
         "status": true
+    },
+    {
+        "nama": "Floki",
+        "alamat": "Kudus",
+        "waktu": "21-09 25 11 2026 Wednesday",
+        "status": true
     }
 ]

@@ -93,22 +93,6 @@ class Simpan:
        print("data tidak di temukan")
        return False
       
-            
-             
-   def update(self,nama,atribut,nilai_baru):
-       if len(self.data_base) ==0:
-          print("tidak ada data yang bisa di ubah")
-          return
-       for a in self.data_base:
-          if a.status and a.nama ==nama:
-             if hasattr(a,atribut):
-                setattr(a,atribut,nilai_baru)
-                print("data berhasi di ubah")
-                return
-             else:
-                print(f"{atribut} pada {nama} tidak di temukan")
-                return
-       print(f"{nama} tidak di temukan")
      
    def isi(self,nama: str,alamat: str,waktu: str) -> None:
        usr =Ini(nama,alamat,waktu)
@@ -192,9 +176,9 @@ if __name__=="__main__":
               else:
                  print(f"{condisi} tidak ada terdafdar dalam data")
       elif pilih_ ==5:
-               delete_ =input.pertanyaan_8()
-               sb.hapus(delete_)
-               sb.simpan_data()
+               delete_ =vld.pertanyaan_8()
+               data_s.delete(delete_)
+               nilai_pesan += 1
       elif pilih_ ==6:
            user_name =vld.pertanyaan_1()
            data_s.luru(user_name)

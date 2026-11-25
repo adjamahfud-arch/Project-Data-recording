@@ -77,7 +77,17 @@ class Data:
           print("nama tidak di temukan")
        print("data berhasil di ubah")
        self.con.commit()
-       
+
+   def delete(self,nama: str):
+       cursor =self.con.execute(
+        "DELETE FROM record WHERE nama == ?",
+         (nama,)
+       )
+       if cursor.rowcount == 0:
+          print("nama tidak di temukan")
+       print("data berhasil di hapus")
+       self.con.commit()
+     
 if __name__=="__main__":
    db =Data()
    db.update(1,"uang",90)
